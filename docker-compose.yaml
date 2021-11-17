@@ -1,0 +1,33 @@
+version: '3.5'
+
+services:
+  mongo:
+    image: mongo
+    hostname: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+    volumes:
+      - mongodb-volume:/data/db
+  backend:
+    build: ./todo-api
+    ports:
+      - "5000:5000"
+    environment:
+      MONGO_HOST: mongo
+      FLASK_ENV: development
+    volumes:
+      - ./todo-api:/code
+    links:
+      - mongo
+  frontend:
+    build: ./serverReactVM
+    ports:
+      - "3000:80"
+    links:
+      - backend
+
+volumes:
+  mongodb-volume:
